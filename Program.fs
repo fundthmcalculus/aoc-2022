@@ -25,6 +25,7 @@ let day1() =
 let winMap = Map ["rock", "scissors"; "paper", "rock"; "scissors", "paper";]
 let lossMap = flipMap winMap
 let playMap = Map [ "A", "rock"; "X", "rock"; "B", "paper"; "Y", "paper"; "C", "scissors"; "Z", "scissors"; ]
+let scoreMap = Map ["rock", 1; "paper", 2; "scissors", 3]
 let namePlay(x: string): string =
     playMap[x]
     
@@ -37,7 +38,6 @@ let playRound(myPlay: string, opponentPlay: string): int =
         -1
     
 let scorePlay(play: string): int =
-    let scoreMap = Map ["rock", 1; "paper", 2; "scissors", 3]
     scoreMap[play]
 
 let scoreRound(myPlay: string, opponentPlay: string): int =
@@ -65,8 +65,8 @@ let playFile(lines: seq<string>, strategy: (string -> int)): seq<int> =
     
 let day2() =
     let demo = false
-    printfn $"2A: {Seq.sum(playFile(readFile(2, demo), playLine))}"
-    printfn $"2B: {Seq.sum(playFile(readFile(2, demo), strategyLine))}"
+    printfn $"2A: {readFile(2, demo) |> Seq.map(playLine) |> Seq.sum}"
+    printfn $"2B: {readFile(2, demo) |> Seq.map(strategyLine) |> Seq.sum}"
 
 
 printfn "AOC 2022"
