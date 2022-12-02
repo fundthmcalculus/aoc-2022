@@ -1,5 +1,6 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
 
+open System
 open System.IO
 
 printfn "Advent of Code"
@@ -7,7 +8,7 @@ printfn "Advent of Code"
 let readLines filePath = File.ReadLines(filePath);
 let readFile(day: int, demo: bool): seq<string> = 
     let demoSuffix = if demo then "_demo" else "";
-    readLines($"day{day}{demoSuffix}.txt")
+    readLines(Path.Combine("data",$"day{day}{demoSuffix}.txt"))
     
 // let chunkSequence(self: seq<string>, split: string): seq<seq<string>> =
 //     let currentSequence = Seq.empty<string>
@@ -18,6 +19,29 @@ let readFile(day: int, demo: bool): seq<string> =
 //             currentSequence = []
 //         else
 //             currentSequence = seq { yield! currentSequence; yield x }
-let day1A() =
-    Seq.max(for line: string in readFile(1, true) do
-        )
+
+let countCalories(lines: seq<string>): seq<int> =
+    let mutable calorieSum = 0
+    seq {
+        for line in lines do
+            if String.IsNullOrEmpty(line) then
+                yield calorieSum
+                calorieSum <- 0
+            else
+                calorieSum <- calorieSum + int(line)
+        for x in Seq.singleton calorieSum do
+            yield x
+        }
+    
+let topN(source: seq<_>, N: int): seq<_> =
+    let lowHighSort = Seq.sort source
+    let highLowSort = Seq.rev lowHighSort
+    Seq.take N highLowSort
+    
+let printSequence(source: seq<_>): string =
+    (", ", source) |> String.Join
+
+let day1() =
+    let demo = false
+    printfn $"%d{Seq.max(countCalories(readFile(1, demo)))}"
+    printfn $"%d{Seq.sum(topN(countCalories(readFile(1, demo)), 3))}"
