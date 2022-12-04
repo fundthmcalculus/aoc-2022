@@ -15,7 +15,7 @@ let topN (source: seq<_>, N: int) : seq<_> =
     Seq.sort source |> Seq.rev |> Seq.take N
 
 let printSequence (source: seq<_>) : string =
-    (", ", source |> Seq.map (string)) |> String.Join
+    (", ", source |> Seq.map string) |> String.Join
 
 let flipMap (map: Map<_, _>) : Map<_, _> =
     seq {

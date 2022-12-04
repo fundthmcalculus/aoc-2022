@@ -12,7 +12,7 @@ let countCalories (lines: seq<string>) : seq<int> =
                 yield calorieSum
                 calorieSum <- 0
             else
-                calorieSum <- calorieSum + int (line)
+                calorieSum <- calorieSum + int line
 
         for x in Seq.singleton calorieSum do
             yield x
@@ -27,9 +27,9 @@ let day1 () =
         function
         | x -> topN (x, 3)
 
-    printfn $"1A: %d{lines |> countCalories |> Seq.max}"
+    printfn $"{day}A: %d{lines |> countCalories |> Seq.max}"
 
-    printfn $"1B: %d{lines |> countCalories |> top3 |> Seq.sum}"
+    printfn $"{day}B: %d{lines |> countCalories |> top3 |> Seq.sum}"
 
 let winMap =
     Map [ "rock", "scissors"
@@ -64,12 +64,12 @@ let playRound (myPlay: string, opponentPlay: string) : int =
 let scorePlay (play: string) : int = scoreMap[play]
 
 let scoreRound (myPlay: string, opponentPlay: string) : int =
-    scorePlay (myPlay)
+    scorePlay myPlay
     + 3 * (1 + playRound (myPlay, opponentPlay))
 
 let playLine (line: string) : int =
     let plays =
-        (line.Split " ") |> Seq.map (namePlay)
+        (line.Split " ") |> Seq.map namePlay
 
     scoreRound (Seq.last plays, Seq.head plays)
 
@@ -95,9 +95,9 @@ let day2 () =
     let day = 2
     let lines = readFile (day, demo)
 
-    printfn $"2A: {lines |> Seq.map (playLine) |> Seq.sum}"
+    printfn $"{day}A: {lines |> Seq.map playLine |> Seq.sum}"
 
-    printfn $"2B: {lines |> Seq.map (strategyLine) |> Seq.sum}"
+    printfn $"{day}B: {lines |> Seq.map strategyLine |> Seq.sum}"
 
 
 let splitRucksack (line: string) : string * string =
@@ -116,7 +116,7 @@ let commonCharacter (a: string, b: string) : char =
 
 let commonBadge (a: string []) : char =
     (Seq.ofArray a
-     |> Seq.map (uniqueChars)
+     |> Seq.map uniqueChars
      |> Set.intersectMany
      |> Set.toList)
         .Head
@@ -135,21 +135,62 @@ let day3 () =
     let lines = readFile (day, demo)
 
     printfn
-        $"3A: {lines
-               |> Seq.map (splitRucksack)
-               |> Seq.map (commonCharacter)
-               |> Seq.map (prioritize)
+        $"{day}A: {lines
+               |> Seq.map splitRucksack
+               |> Seq.map commonCharacter
+               |> Seq.map prioritize
                |> Seq.sum}"
 
     printfn
-        $"3B: {lines
-               |> Seq.chunkBySize (3)
-               |> Seq.map (commonBadge)
-               |> Seq.map (prioritize)
+        $"{day}B: {lines
+               |> Seq.chunkBySize 3
+               |> Seq.map commonBadge
+               |> Seq.map prioritize
+               |> Seq.sum}"
+               
+
+let toRange(x: string): Range =
+    let y = Seq.ofArray(x.Split("-")) |> Seq.map(int) |> Seq.toArray
+    Range(y[0],y[1])
+
+let findRange(line: string): Range*Range =
+    let x = Seq.ofArray(line.Split(",")) |> Seq.map(toRange) |> Seq.toArray
+    x[0], x[1]
+
+let fullyContained(x: Range, y: Range): bool =
+    x.Start.Value <= y.Start.Value && x.End.Value >= y.End.Value
+    
+let oneFullyContains(x: Range, y: Range): bool =
+    fullyContained(x, y) || fullyContained(y, x)
+    
+let rangeIntersect(x: Range, y: Range): bool =
+    not (x.End.Value < y.Start.Value || x.Start.Value > y.End.Value)
+    
+let day4 () =
+    let demo = false
+    let day = 4
+    let lines = readFile (day, demo)
+
+    printfn
+        $"{day}A: {lines
+               |> Seq.map findRange
+               |> Seq.map oneFullyContains
+               |> Seq.map Convert.ToInt32
+               |> Seq.sum}"
+
+    printfn
+        $"{day}A: {lines
+               |> Seq.map findRange
+               |> Seq.map rangeIntersect
+               |> Seq.map Convert.ToInt32
                |> Seq.sum}"
 
 
 printfn "AOC 2022"
+let t0 = DateTime.Now
 day1 ()
 day2 ()
 day3 ()
+day4 ()
+let t1 = DateTime.Now
+printfn $"Elapsed Time={t1-t0}"
