@@ -136,36 +136,48 @@ let day3 () =
 
     printfn
         $"{day}A: {lines
-               |> Seq.map splitRucksack
-               |> Seq.map commonCharacter
-               |> Seq.map prioritize
-               |> Seq.sum}"
+                   |> Seq.map splitRucksack
+                   |> Seq.map commonCharacter
+                   |> Seq.map prioritize
+                   |> Seq.sum}"
 
     printfn
         $"{day}B: {lines
-               |> Seq.chunkBySize 3
-               |> Seq.map commonBadge
-               |> Seq.map prioritize
-               |> Seq.sum}"
-               
+                   |> Seq.chunkBySize 3
+                   |> Seq.map commonBadge
+                   |> Seq.map prioritize
+                   |> Seq.sum}"
 
-let toRange(x: string): Range =
-    let y = Seq.ofArray(x.Split("-")) |> Seq.map(int) |> Seq.toArray
-    Range(y[0],y[1])
 
-let findRange(line: string): Range*Range =
-    let x = Seq.ofArray(line.Split(",")) |> Seq.map(toRange) |> Seq.toArray
+let toRange (x: string) : Range =
+    let y =
+        Seq.ofArray (x.Split("-"))
+        |> Seq.map (int)
+        |> Seq.toArray
+
+    Range(y[0], y[1])
+
+let findRange (line: string) : Range * Range =
+    let x =
+        Seq.ofArray (line.Split(","))
+        |> Seq.map (toRange)
+        |> Seq.toArray
+
     x[0], x[1]
 
-let fullyContained(x: Range, y: Range): bool =
-    x.Start.Value <= y.Start.Value && x.End.Value >= y.End.Value
-    
-let oneFullyContains(x: Range, y: Range): bool =
-    fullyContained(x, y) || fullyContained(y, x)
-    
-let rangeIntersect(x: Range, y: Range): bool =
-    not (x.End.Value < y.Start.Value || x.Start.Value > y.End.Value)
-    
+let fullyContained (x: Range, y: Range) : bool =
+    x.Start.Value <= y.Start.Value
+    && x.End.Value >= y.End.Value
+
+let oneFullyContains (x: Range, y: Range) : bool =
+    fullyContained (x, y) || fullyContained (y, x)
+
+let rangeIntersect (x: Range, y: Range) : bool =
+    not (
+        x.End.Value < y.Start.Value
+        || x.Start.Value > y.End.Value
+    )
+
 let day4 () =
     let demo = false
     let day = 4
@@ -173,17 +185,17 @@ let day4 () =
 
     printfn
         $"{day}A: {lines
-               |> Seq.map findRange
-               |> Seq.map oneFullyContains
-               |> Seq.map Convert.ToInt32
-               |> Seq.sum}"
+                   |> Seq.map findRange
+                   |> Seq.map oneFullyContains
+                   |> Seq.map Convert.ToInt32
+                   |> Seq.sum}"
 
     printfn
         $"{day}A: {lines
-               |> Seq.map findRange
-               |> Seq.map rangeIntersect
-               |> Seq.map Convert.ToInt32
-               |> Seq.sum}"
+                   |> Seq.map findRange
+                   |> Seq.map rangeIntersect
+                   |> Seq.map Convert.ToInt32
+                   |> Seq.sum}"
 
 
 printfn "AOC 2022"
@@ -193,4 +205,4 @@ day2 ()
 day3 ()
 day4 ()
 let t1 = DateTime.Now
-printfn $"Elapsed Time={t1-t0}"
+printfn $"Elapsed Time={t1 - t0}"
