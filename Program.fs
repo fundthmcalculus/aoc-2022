@@ -1,6 +1,7 @@
 ﻿module aoc_2022
 
 open System
+open System.Collections.Generic
 open Utilities
 
 let countCalories (lines: seq<string>) : seq<int> =
@@ -179,7 +180,43 @@ let day4 () =
                |> Seq.sum}"
 
     printfn
-        $"{day}A: {lines
+        $"{day}B: {lines
+               |> Seq.map findRange
+               |> Seq.map rangeIntersect
+               |> Seq.map Convert.ToInt32
+               |> Seq.sum}"
+         
+let getRowOfBoxes(line: string): seq<int*string> =
+    Seq.ofArray(line.ToCharArray()) |> Seq.chunkBySize(4) |> Seq.map(fun x -> String.Join("", x)) |> Seq.mapi(fun i x -> i, x.Trim())
+
+let pushBox(stackZip: string*Stack<string>) =
+    snd(stackZip).Push(fst(stackZip))
+    snd(stackZip)
+
+let day5 () =
+    let demo = true
+    let day = 5
+    let lines = readFile (day, demo)
+    let blankLineIndex = lines |> Seq.findIndex(String.IsNullOrWhiteSpace)
+    let instructionLines = lines |> Seq.skip(blankLineIndex+1)
+    let stackLines = lines |> Seq.take(blankLineIndex-1)
+    let stackIndex = lines |> Seq.skip(blankLineIndex-1) |> Seq.head
+    // Create the sequence of stacks
+    let stackCount = stackIndex.Split(" ", StringSplitOptions.RemoveEmptyEntries) |> Seq.ofArray |> Seq.last |> int
+    let stacks = seq { for _ij in 1..stackCount do Stack<string>(5) }
+    
+    // Populate the stacks - back to front because stacks
+    let allBoxes: seq<seq<string>> = stackLines |> Seq.map(getRowOfBoxes) |> Seq.concat |> Seq.groupBy(fst) |> 
+
+    printfn
+        $"{day}A: {instructionLines
+               |> Seq.map findRange
+               |> Seq.map oneFullyContains
+               |> Seq.map Convert.ToInt32
+               |> Seq.sum}"
+
+    printfn
+        $"{day}B: {lines
                |> Seq.map findRange
                |> Seq.map rangeIntersect
                |> Seq.map Convert.ToInt32
@@ -192,5 +229,6 @@ day1 ()
 day2 ()
 day3 ()
 day4 ()
+day5 ()
 let t1 = DateTime.Now
 printfn $"Elapsed Time={t1-t0}"

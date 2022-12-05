@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Utilities.fs"/>
-        <Compile Include="Program.fs"/>
-        <Content Include="data\*.txt" CopyToOutputDirectory="Always"/>
+        <Compile Include="Utilities.fs" />
+        <Compile Include="Program.fs" />
+        <Content Include="data\*.txt" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
 </Project>
